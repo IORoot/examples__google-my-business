@@ -37,7 +37,7 @@ Next:
 
 ## The Examples
 
-All examples are in the `examples` folder. They are all self-contained, so each file should contain everything it needs. Pull out the one you want and place it into the root folder. Run your webserver and view!
+All examples are in the `examples` folder. They are all self-contained, so each file should contain everything it needs. Pull out the one you want and place it into the root folder and rename it as`index.php`. Run your webserver and view!
 
 ## Troubleshooting
 

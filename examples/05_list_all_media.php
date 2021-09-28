@@ -61,59 +61,10 @@ $location_name = $list_account_locations->locations[0]->name;
 // List all media for location
 $list_media = $my_business_account->accounts_locations_media->listAccountsLocationsMedia($location_name);
 
-// Get Media ID (item 6) - PHOTO
-$media_name = $list_media->mediaItems[0]->name;
-
-// Get single Media Post Object
-$media_item = $my_business_account->accounts_locations_media->get($media_name);
-
-// Get the GOOGLE_URL of the media item.
-$media_sourceUrl = $media_item->getGoogleUrl();
-
-// ┌─────────────────────────────────────────────────────────────────────────┐
-// │                           NEW Media OBJECT                              │
-// └─────────────────────────────────────────────────────────────────────────┘
-
-// Create a new mediaItem to use on out localpost
-$new_mediaItem = new Google_Service_MyBusiness_MediaItem();
-
-// Set the source URL to the pre-existing google_url of an already uploaded video / photo
-$new_mediaItem->setSourceUrl($media_sourceUrl);
-
-// Set the media_format
-$new_mediaItem->setMediaFormat('PHOTO');
-
-
-// ┌─────────────────────────────────────────────────────────────────────────┐
-// │                           localpost OBJECT                              │
-// └─────────────────────────────────────────────────────────────────────────┘
-
-// New LocalPost object.
-$local_post = new Google_Service_MyBusiness_LocalPost();
-
-// Set Post language.
-$local_post->setLanguageCode('en-GB');
-
-// Set body of post.
-$local_post->setSummary("This is the main content of the post we will be creating.");
-
-// Required (https://developers.google.com/my-business/reference/rest/v4/accounts.locations.localPosts#LocalPostTopicType)
-$local_post->setTopicType('STANDARD');
-
-// Set the media item we want to associate to the post.
-$local_post->setMedia([$new_mediaItem]);
-
-// ┌─────────────────────────────────────────────────────────────────────────┐
-// │                         localpost RESOURCE                              │
-// └─────────────────────────────────────────────────────────────────────────┘
-
-// Create the new post
-$post = $my_business_account->accounts_locations_localPosts->create($location_name, $local_post);
-
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │                            OUTPUT RESULT                                │
 // └─────────────────────────────────────────────────────────────────────────┘
 
 echo '<pre>';
-echo print_r($post, true);
+echo print_r($list_media, true);
 echo '</pre>';
