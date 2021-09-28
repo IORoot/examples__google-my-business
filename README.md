@@ -52,3 +52,8 @@ All examples are in the `examples` folder. They are all self-contained, so each 
 https://londonparkour.com/wp-admin/admin-ajax.php
 ```
 Preferably at the top of the list.
+
+
+## Changelog
+
+0.0.1 - Initial Commit.
