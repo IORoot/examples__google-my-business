@@ -11,7 +11,8 @@ include_once __DIR__ . '/vendor/autoload.php';
 
 $credentials = __DIR__ . '/client_secret.json';
 
-$client = new Google\Client();
+// switch on errors
+$client = new Google\Client(['api_format_v2' => true]);
 $client->setAuthConfig($credentials);
 $client->addScope("https://www.googleapis.com/auth/business.manage");
 $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
@@ -21,7 +22,7 @@ $my_business_account = new Google_Service_MyBusiness($client);
 
 if (isset($_GET['logout'])) { // logout: destroy token
     unset($_SESSION['token']);
-    die('Logged out.');
+  die('Logged out.');
 }
 
 if (isset($_GET['code'])) { // get auth code, get the token and store it in session
@@ -57,33 +58,49 @@ $list_account_locations = $my_business_account->accounts_locations->listAccounts
 // Location Name for first location
 $location_name = $list_account_locations->locations[0]->name;
 
-// List Local Posts
-$local_posts = $my_business_account->accounts_locations_localPosts->listAccountsLocationsLocalPosts($location_name);
-
-
 // ┌─────────────────────────────────────────────────────────────────────────┐
-// │                            Latest Post                                  │
+// │                            locationAssociation                          │
 // └─────────────────────────────────────────────────────────────────────────┘
 
-$latest_post_name = $local_posts->localPosts[0]->name;
+// A locationAssociation is needed for a MediaItem
+$locationAssociation = new Google_Service_MyBusiness_LocationAssociation();
 
-$latest_post = $my_business_account->accounts_locations_localPosts->get($latest_post_name);
-
-$latest_post->setSummary('better summary');
+// Set Category(https://developers.google.com/my-business/reference/rest/v4/accounts.locations.media#MediaItem.Category)
+$locationAssociation->setCategory('CATEGORY_UNSPECIFIED');
 
 // ┌─────────────────────────────────────────────────────────────────────────┐
-// │                            Update Post                                  │
+// │                                mediaItem                                │
 // └─────────────────────────────────────────────────────────────────────────┘
 
-$update_mask = [ 'updateMask' => 'summary'];   
+// Create a new MediaItem object
+$mediaItem = new Google_Service_MyBusiness_MediaItem();
 
-$updated_post = $my_business_account->accounts_locations_localPosts->patch($latest_post_name, $latest_post, $update_mask);
+// Set MediaItem Name: string
+$mediaItem->setName('Test Video');
+
+// Media Type: [MEDIA_FORMAT_UNSPECIFIED|PHOTO|VIDEO]
+$mediaItem->setMediaFormat('VIDEO');
+
+// Attach locationAssociation to mediaItem.
+$mediaItem->setLocationAssociation($locationAssociation);
+
+// Test Description.
+$mediaItem->setDescription("Test Video");
+
+// Public URL of image.
+$mediaItem->setSourceUrl("https://docs.google.com/uc?export=download&id=112xg44sZBeicWXsVm4ToVGUrEHeLjbYf");
+
+// ┌─────────────────────────────────────────────────────────────────────────┐
+// │                             Create on GMB                               │
+// └─────────────────────────────────────────────────────────────────────────┘
+
+// Upload image via URL to location
+$new_image = $my_business_account->accounts_locations_media->create($location_name, $mediaItem);
 
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │                            OUTPUT RESULT                                │
 // └─────────────────────────────────────────────────────────────────────────┘
 
 echo '<pre>';
-echo print_r($updated_post, true);
+echo print_r($new_image, true);
 echo '</pre>';
-echo '<hr/>';

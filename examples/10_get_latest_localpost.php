@@ -60,7 +60,6 @@ $location_name = $list_account_locations->locations[0]->name;
 // List Local Posts
 $local_posts = $my_business_account->accounts_locations_localPosts->listAccountsLocationsLocalPosts($location_name);
 
-
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │                            Latest Post                                  │
 // └─────────────────────────────────────────────────────────────────────────┘
@@ -69,21 +68,10 @@ $latest_post_name = $local_posts->localPosts[0]->name;
 
 $latest_post = $my_business_account->accounts_locations_localPosts->get($latest_post_name);
 
-$latest_post->setSummary('better summary');
-
-// ┌─────────────────────────────────────────────────────────────────────────┐
-// │                            Update Post                                  │
-// └─────────────────────────────────────────────────────────────────────────┘
-
-$update_mask = [ 'updateMask' => 'summary'];   
-
-$updated_post = $my_business_account->accounts_locations_localPosts->patch($latest_post_name, $latest_post, $update_mask);
-
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │                            OUTPUT RESULT                                │
 // └─────────────────────────────────────────────────────────────────────────┘
 
 echo '<pre>';
-echo print_r($updated_post, true);
+echo print_r($latest_post, true);
 echo '</pre>';
-echo '<hr/>';
