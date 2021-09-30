@@ -95,12 +95,12 @@ $mediaItem->setSourceUrl("https://docs.google.com/uc?export=download&id=112xg44s
 // └─────────────────────────────────────────────────────────────────────────┘
 
 // Upload image via URL to location
-$new_image = $my_business_account->accounts_locations_media->create($location_name, $mediaItem);
+$new_video = $my_business_account->accounts_locations_media->create($location_name, $mediaItem);
 
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │                            OUTPUT RESULT                                │
 // └─────────────────────────────────────────────────────────────────────────┘
 
 echo '<pre>';
-echo print_r($new_image, true);
+echo print_r($new_video, true);
 echo '</pre>';
