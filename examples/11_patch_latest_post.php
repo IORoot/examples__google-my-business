@@ -11,7 +11,7 @@ include_once __DIR__ . '/vendor/autoload.php';
 
 $credentials = __DIR__ . '/client_secret.json';
 
-$client = new Google\Client();
+$client = new Google\Client(['api_format_v2' => true]);
 $client->setAuthConfig($credentials);
 $client->addScope("https://www.googleapis.com/auth/business.manage");
 $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];

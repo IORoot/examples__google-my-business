@@ -11,7 +11,7 @@ include_once __DIR__ . '/vendor/autoload.php';
 
 $credentials = __DIR__ . '/client_secret.json';
 
-$client = new Google\Client();
+$client = new Google\Client(['api_format_v2' => true]);
 $client->setAuthConfig($credentials);
 $client->addScope("https://www.googleapis.com/auth/business.manage");
 $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
@@ -69,13 +69,54 @@ $latest_post_name = $local_posts->localPosts[0]->name;
 
 $latest_post = $my_business_account->accounts_locations_localPosts->get($latest_post_name);
 
-$latest_post->setSummary('better summary');
+echo '<pre>';
+echo '<h1>latest_post</h1>';
+echo print_r($latest_post, true);
+echo '</pre>';
+echo '<hr/>';
+
+// ┌─────────────────────────────────────────────────────────────────────────┐
+// │                            Second Post                                  │
+// └─────────────────────────────────────────────────────────────────────────┘
+
+$second_post_name = $local_posts->localPosts[1]->name;
+
+$second_post = $my_business_account->accounts_locations_localPosts->get($second_post_name);
+
+echo '<pre>';
+echo '<h1>second_post</h1>';
+echo print_r($second_post, true);
+echo '</pre>';
+echo '<hr/>';
+
+$second_post_media = $second_post->getMedia();
+
+echo '<pre>';
+echo '<h1>second_post_media</h1>';
+echo print_r($second_post_media, true);
+echo '</pre>';
+echo '<hr/>';
+
+// ┌─────────────────────────────────────────────────────────────────────────┐
+// │                            Change Post                                  │
+// └─────────────────────────────────────────────────────────────────────────┘
+
+// change image - ARRAY
+$latest_post->setMedia( $second_post_media) ;
+
+echo '<pre>';
+echo '<h1>changed_post</h1>';
+echo print_r($latest_post, true);
+echo '</pre>';
+echo '<hr/>';
+
+
 
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │                            Update Post                                  │
 // └─────────────────────────────────────────────────────────────────────────┘
 
-$update_mask = [ 'updateMask' => 'summary'];   
+$update_mask = [ 'updateMask' => 'media.0.name,media.0.mediaFormat'];   
 
 $updated_post = $my_business_account->accounts_locations_localPosts->patch($latest_post_name, $latest_post, $update_mask);
 
