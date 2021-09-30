@@ -1,5 +1,6 @@
 # Google My Business - Example PHP 
 
+This is just a a simple repository of a few of the different methods you can use on the GMB API.
 ## Requirements
 
 1. PHP v7.4+
@@ -39,21 +40,6 @@ Next:
 
 All examples are in the `examples` folder. They are all self-contained, so each file should contain everything it needs. Pull out the one you want and place it into the root folder and rename it as`index.php`. Run your webserver and view!
 
-## Troubleshooting
-
-### OAUTH Issues
-
-
-1. If you're not using localhost, ensure HTTPS is working. (Make sure cert is created and added to keychain) - HTTP will not work.
-
-
-2. Ensure the address of the `Authorised redirect URIs` has the correct URIs in it's list.
-```
-https://londonparkour.com/wp-admin/admin-ajax.php
-```
-Preferably at the top of the list.
-
-
 ## Changelog
 
-0.0.1 - Initial Commit.
+0.0.1 - Initial.
