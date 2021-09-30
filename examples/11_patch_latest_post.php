@@ -69,11 +69,11 @@ $latest_post_name = $local_posts->localPosts[0]->name;
 
 $latest_post = $my_business_account->accounts_locations_localPosts->get($latest_post_name);
 
-$latest_post->setSummary('new summary');
-
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │                            Update Post                                  │
 // └─────────────────────────────────────────────────────────────────────────┘
+
+$latest_post->setSummary('new summary');
 
 $update_mask = [ 'updateMask' => 'summary'];   
 

@@ -11,7 +11,6 @@ include_once __DIR__ . '/vendor/autoload.php';
 
 $credentials = __DIR__ . '/client_secret.json';
 
-// switch on errors
 $client = new Google\Client(['api_format_v2' => true]);
 $client->setAuthConfig($credentials);
 $client->addScope("https://www.googleapis.com/auth/business.manage");
@@ -22,7 +21,7 @@ $my_business_account = new Google_Service_MyBusiness($client);
 
 if (isset($_GET['logout'])) { // logout: destroy token
     unset($_SESSION['token']);
-  die('Logged out.');
+    die('Logged out.');
 }
 
 if (isset($_GET['code'])) { // get auth code, get the token and store it in session
@@ -58,62 +57,29 @@ $list_account_locations = $my_business_account->accounts_locations->listAccounts
 // Location Name for first location
 $location_name = $list_account_locations->locations[0]->name;
 
-// List all media for location
-$list_media = $my_business_account->accounts_locations_media->listAccountsLocationsMedia($location_name);
-
-// Get Media ID (item 6) - PHOTO
-$media_name = $list_media->mediaItems[0]->name;
-
-// Get single Media Post Object
-$media_item = $my_business_account->accounts_locations_media->get($media_name);
-
-// Get the GOOGLE_URL of the media item.
-$media_sourceUrl = $media_item->getGoogleUrl();
-
-// ┌─────────────────────────────────────────────────────────────────────────┐
-// │                           NEW Media OBJECT                              │
-// └─────────────────────────────────────────────────────────────────────────┘
-
-// Create a new mediaItem to use on out localpost
-$new_mediaItem = new Google_Service_MyBusiness_MediaItem();
-
-// Set the source URL to the pre-existing google_url of an already uploaded video / photo
-$new_mediaItem->setSourceUrl($media_sourceUrl);
-
-// Set the media_format
-$new_mediaItem->setMediaFormat('PHOTO');
+// List Local Posts
+$local_posts = $my_business_account->accounts_locations_localPosts->listAccountsLocationsLocalPosts($location_name);
 
 
 // ┌─────────────────────────────────────────────────────────────────────────┐
-// │                           localpost OBJECT                              │
+// │                            Latest Post                                  │
 // └─────────────────────────────────────────────────────────────────────────┘
 
-// New LocalPost object.
-$local_post = new Google_Service_MyBusiness_LocalPost();
-
-// Set Post language.
-$local_post->setLanguageCode('en-GB');
-
-// Set body of post.
-$local_post->setSummary("This is the main content of the post we will be creating.");
-
-// Required (https://developers.google.com/my-business/reference/rest/v4/accounts.locations.localPosts#LocalPostTopicType)
-$local_post->setTopicType('STANDARD');
-
-// Set the media item we want to associate to the post.
-$local_post->setMedia([$new_mediaItem]);
+// get name
+$latest_post_name = $local_posts->localPosts[0]->name;
 
 // ┌─────────────────────────────────────────────────────────────────────────┐
-// │                         localpost RESOURCE                              │
+// │                            Delete Post                                  │
 // └─────────────────────────────────────────────────────────────────────────┘
 
-// Create the new post
-$post = $my_business_account->accounts_locations_localPosts->create($location_name, $local_post);
+// delete
+$updated_post = $my_business_account->accounts_locations_localPosts->delete($latest_post_name);
 
 // ┌─────────────────────────────────────────────────────────────────────────┐
 // │                            OUTPUT RESULT                                │
 // └─────────────────────────────────────────────────────────────────────────┘
 
 echo '<pre>';
-echo print_r($post, true);
+echo print_r($updated_post, true);
 echo '</pre>';
+echo '<hr/>';
